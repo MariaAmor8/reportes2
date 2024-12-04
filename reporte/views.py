@@ -41,7 +41,7 @@ def eliminar_reporte_view(request, codigo):
 def check_estudiante(idEstudiante):
     """Obtiene el pago de la otra máquina usando el idPago"""
     try:
-        path = "http://34.135.218.205:8080/students/" + str(idEstudiante)
+        path = "http://34.41.63.193:8080/students/" + str(idEstudiante) #cambiar IP
         r = requests.get(path, headers={"Accept": "application/json"})
         r.raise_for_status()  # Lanza una excepción si la respuesta es un error
         estudiante = r.json()
