@@ -15,7 +15,7 @@ def generar_reporte_view(request):
         estudiante = data.get('estudiante')
         emisor = data.get('emisor')
         reporte = generar_reporte(codigo, estudiante, emisor)
-        check_estudiante(estudiante)
+        
         return JsonResponse({'codigo': reporte.codigo, 'estudiante': reporte.estudiante, 'fechaEmision': reporte.fechaEmision, 'emisor': reporte.emisor})
 
 @csrf_exempt
@@ -25,6 +25,7 @@ def consultar_reporte_view(request, codigo):
         if reporte:
             return JsonResponse({'codigo': reporte.codigo, 'estudiante': reporte.estudiante, 'fechaEmision': reporte.fechaEmision, 'emisor': reporte.emisor})
         else:
+            check_estudiante(codigo)
             return JsonResponse({'error': 'Reporte no encontrado'}, status=404)
 
 @csrf_exempt
