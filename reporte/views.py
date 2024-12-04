@@ -12,21 +12,37 @@ def generar_reporte_view(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         codigo = data.get('codigo')
-        estudiante = data.get('estudiante')
+        estudiante = data.get('estudiante') #numId del estudiante
         emisor = data.get('emisor')
-        reporte = generar_reporte(codigo, estudiante, emisor)
-        
-        return JsonResponse({'codigo': reporte.codigo, 'estudiante': reporte.estudiante, 'fechaEmision': reporte.fechaEmision, 'emisor': reporte.emisor})
+        if check_estudiante(estudiante) != None:
+            reporte = generar_reporte(codigo, estudiante, emisor)
+            return JsonResponse({'codigo': reporte.codigo, 'estudiante': reporte.estudiante, 'fechaEmision': reporte.fechaEmision, 'emisor': reporte.emisor})
 
 @csrf_exempt
 def consultar_reporte_view(request, codigo):
     if request.method == 'GET':
+        # Primero, obtenemos el reporte usando el código
         reporte = consultar_reporte(codigo)
+        
         if reporte:
-            return JsonResponse({'codigo': reporte.codigo, 'estudiante': reporte.estudiante, 'fechaEmision': reporte.fechaEmision, 'emisor': reporte.emisor})
+            try:
+                # Obtenemos la información del estudiante usando la función check_estudiante
+                estudiante = check_estudiante(reporte.estudiante)
+                
+                # Embebemos la información del estudiante en la respuesta JSON del reporte
+                return JsonResponse({
+                    'codigo': reporte.codigo,
+                    'estudiante': estudiante,  # Aquí agregamos el objeto estudiante completo
+                    'fechaEmision': reporte.fechaEmision,
+                    'emisor': reporte.emisor
+                })
+            except ValueError as e:
+                # Si ocurre un error al obtener el estudiante, respondemos con el error
+                return JsonResponse({'error': str(e)}, status=400)
         else:
-            check_estudiante(codigo)
+            # Si el reporte no se encuentra, respondemos con un error
             return JsonResponse({'error': 'Reporte no encontrado'}, status=404)
+
 
 @csrf_exempt
 def eliminar_reporte_view(request, codigo):
