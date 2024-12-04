@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .logic import generar_reporte, consultar_reporte, eliminar_reporte
 import json
+import requests
 
 @csrf_exempt
 def generar_reporte_view(request):
@@ -14,6 +15,7 @@ def generar_reporte_view(request):
         estudiante = data.get('estudiante')
         emisor = data.get('emisor')
         reporte = generar_reporte(codigo, estudiante, emisor)
+        check_estudiante(estudiante)
         return JsonResponse({'codigo': reporte.codigo, 'estudiante': reporte.estudiante, 'fechaEmision': reporte.fechaEmision, 'emisor': reporte.emisor})
 
 @csrf_exempt
@@ -33,3 +35,16 @@ def eliminar_reporte_view(request, codigo):
             return JsonResponse({'mensaje': 'Reporte eliminado correctamente'})
         else:
             return JsonResponse({'error': 'Reporte no encontrado'}, status=404)
+
+@csrf_exempt
+def check_estudiante(idEstudiante):
+    """Obtiene el pago de la otra máquina usando el idPago"""
+    try:
+        path = "http://34.135.218.205:8080/students/" + str(idEstudiante)
+        r = requests.get(path, headers={"Accept": "application/json"})
+        r.raise_for_status()  # Lanza una excepción si la respuesta es un error
+        estudiante = r.json()
+        print(estudiante)
+    
+    except requests.exceptions.RequestException as e:
+        raise ValueError(f"Error al obtener el pago: {str(e)}")
