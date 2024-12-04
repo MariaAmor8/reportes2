@@ -15,7 +15,7 @@ resources:
 - name: reportes-firewall-app
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/sprint3-441010/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/sprint-4-443701/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceRanges: 
@@ -29,7 +29,7 @@ resources:
 - name: reportes-firewall-db
   type: compute.v1.firewall
   properties:
-    network: https://www.googleapis.com/compute/v1/projects/sprint3-441010/global/networks/default
+    network: https://www.googleapis.com/compute/v1/projects/sprint-4-443701/global/networks/default
     priority: 1000
     direction: INGRESS
     sourceTags: 
@@ -46,7 +46,7 @@ resources:
   name: bd-reportes-instance
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/sprint3-441010/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/sprint-4-443701/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -55,7 +55,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/sprint3-441010/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/sprint-4-443701/global/networks/default
       networkIP: 10.128.0.60
       accessConfigs:
       - name: External NAT
@@ -82,7 +82,7 @@ resources:
   name: reportes-ms-instance
   properties:
     zone: us-central1-a
-    machineType: https://www.googleapis.com/compute/v1/projects/sprint3-441010/zones/us-central1-a/machineTypes/e2-micro
+    machineType: https://www.googleapis.com/compute/v1/projects/sprint-4-443701/zones/us-central1-a/machineTypes/e2-micro
     disks:
     - deviceName: boot
       type: PERSISTENT
@@ -91,7 +91,7 @@ resources:
       initializeParams:
         sourceImage: https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2004-focal-v20240307b
     networkInterfaces:
-    - network: https://www.googleapis.com/compute/v1/projects/sprint3-441010/global/networks/default
+    - network: https://www.googleapis.com/compute/v1/projects/sprint-4-443701/global/networks/default
       networkIP: 10.128.0.61
       accessConfigs:
       - name: External NAT
