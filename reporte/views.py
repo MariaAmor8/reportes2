@@ -37,15 +37,30 @@ def eliminar_reporte_view(request, codigo):
         else:
             return JsonResponse({'error': 'Reporte no encontrado'}, status=404)
 
+
 @csrf_exempt
 def check_estudiante(idEstudiante):
-    """Obtiene el pago de la otra máquina usando el idPago"""
+    """Obtiene el estudiante de la otra máquina usando el idEstudiante"""
     try:
-        path = "http://34.41.63.193:8080/students/" + str(idEstudiante) #cambiar IP
+        path = f"http://34.41.63.193:8080/students/{idEstudiante}"  # Cambiar IP si es necesario
         r = requests.get(path, headers={"Accept": "application/json"})
-        r.raise_for_status()  # Lanza una excepción si la respuesta es un error
+        r.raise_for_status()  # Lanza una excepción si la respuesta es un error (4xx, 5xx)
+
+        # Si la respuesta es exitosa, procesamos la respuesta JSON
         estudiante = r.json()
-        print(estudiante)
+        return estudiante
+
+    except requests.exceptions.HTTPError as http_err:
+        # Capturamos errores específicos de HTTP (como 404, 500, etc.)
+        if r.status_code == 404:
+            raise ValueError(f"Estudiante con ID {idEstudiante} no encontrado.")
+        else:
+            raise ValueError(f"Error HTTP al obtener el estudiante: {http_err}")
     
-    except requests.exceptions.RequestException as e:
-        raise ValueError(f"Error al obtener el pago: {str(e)}")
+    except requests.exceptions.RequestException as req_err:
+        # Capturamos errores generales de la solicitud (como problemas de red, conexión rechazada, etc.)
+        raise ValueError(f"Error en la solicitud de red: {req_err}")
+    
+    except Exception as e:
+        # Capturamos cualquier otro tipo de error inesperado
+        raise ValueError(f"Ocurrió un error inesperado: {e}")
